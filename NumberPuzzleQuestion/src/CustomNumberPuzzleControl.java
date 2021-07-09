@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.Arrays;
 
 class CustomNumberPuzzleControl extends NumberPuzzleControl {
 	public int getWidth() {
@@ -35,28 +36,68 @@ class CustomNumberPuzzleControl extends NumberPuzzleControl {
 		int emptyCellId = game.getEmptyCellId();
 		Button buttonClicked = game.getButtonClicked();
 		Button[] buttons = game.getButtons();
-		
-		//Your logic here		
-		
+		String buttonClickedLabel = buttonClicked.getLabel();
+		int buttonClickedId = getButtonId(buttons, buttonClicked);
+		boolean hasEmptyCell = hasAdjacentEmptyCell(emptyCellId, buttonClickedId);
+		if (hasEmptyCell){
+			swapButton(buttons[emptyCellId], buttonClicked);
+			emptyCellId = buttonClickedId;
+		}
 		return emptyCellId;
 
 	}
+	public int getButtonId(Button[] buttons, Button buttonClicked){
+		for (int i = 0; i < buttons.length; i++) {
+			if (buttons[i].getLabel().equals(buttonClicked.getLabel())){
+				return i;
+			}
+		}
+		return -1;
+	}
+	public boolean hasAdjacentEmptyCell(int emptyCellId, int buttonClickedId){
+		int buttonRow = buttonClickedId / 4;
+		int buttonCol = buttonClickedId % 4;
+		int emptyCellRow = emptyCellId / 4;
+		int emptyCellCol = emptyCellId % 4;
+		if (buttonRow == emptyCellRow){
+			if ((buttonCol+1) == emptyCellCol){
+				return true;
+			}
+			return (buttonCol - 1) == emptyCellCol;
+		}
+		else if (buttonCol == emptyCellCol){
+			if ((buttonRow + 1) == emptyCellRow){
+				return true;
+			}
+			return (buttonRow - 1) == emptyCellRow;
+		}
+		return false;
+	}
 	public int[] getRandomNumbersForGrid() {
-		int arr[] = new int[15];
-		
-		//Your logic here
-		int a = getRandomNumber();
-		
-		
+		int[] arr = new int[15];
+		boolean[] checkExisting = new boolean[15];
+		for (int i = 0; i < 15; i++) {
+			int randomNumber = (int) (getRandomNumber()*15/100.0);
+			if (checkExisting[randomNumber]){
+				do {
+					randomNumber = (randomNumber + 1) % 15;
+				}while (checkExisting[randomNumber]);
+			}
+			arr[i] = randomNumber + 1;
+			checkExisting[randomNumber] = true;
+		}
 		return arr;
 	}
+
 	public boolean checkForWinner(Button[] buttons)
 	{
 		boolean winner = true;
-		
-		// Your Logic here
-		getIntegerArrayOfButtonIds(buttons);
-
+		int[] buttonIds = getIntegerArrayOfButtonIds(buttons);
+		for (int i = 0; i < buttonIds.length; i++) {
+			if (buttonIds[i] != i + 1){
+				return false;
+			}
+		}
 		return winner;
 	}
 }
