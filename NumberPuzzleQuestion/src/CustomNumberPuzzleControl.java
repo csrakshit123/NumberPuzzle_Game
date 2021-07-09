@@ -1,5 +1,4 @@
 import java.awt.*;
-import java.util.Arrays;
 
 class CustomNumberPuzzleControl extends NumberPuzzleControl {
 	public int getWidth() {
@@ -30,13 +29,11 @@ class CustomNumberPuzzleControl extends NumberPuzzleControl {
 		return "Congrats, you have won!";
 	}
 
-	// The following three methods have to be written by the participants...
-
+	
 	public int handleButtonClicked(NumberPuzzleGame game){
 		int emptyCellId = game.getEmptyCellId();
 		Button buttonClicked = game.getButtonClicked();
 		Button[] buttons = game.getButtons();
-		String buttonClickedLabel = buttonClicked.getLabel();
 		int buttonClickedId = getButtonId(buttons, buttonClicked);
 		boolean hasEmptyCell = hasAdjacentEmptyCell(emptyCellId, buttonClickedId);
 		if (hasEmptyCell){
@@ -46,6 +43,13 @@ class CustomNumberPuzzleControl extends NumberPuzzleControl {
 		return emptyCellId;
 
 	}
+
+	/**
+	 *
+	 * @param buttons
+	 * @param buttonClicked
+	 * @return button ID of the button clicked
+	 */
 	public int getButtonId(Button[] buttons, Button buttonClicked){
 		for (int i = 0; i < buttons.length; i++) {
 			if (buttons[i].getLabel().equals(buttonClicked.getLabel())){
@@ -54,6 +58,13 @@ class CustomNumberPuzzleControl extends NumberPuzzleControl {
 		}
 		return -1;
 	}
+
+	/**
+	 *
+	 * @param emptyCellId
+	 * @param buttonClickedId
+	 * @return true if clicked button has empty adjacent cell.
+	 */
 	public boolean hasAdjacentEmptyCell(int emptyCellId, int buttonClickedId){
 		int buttonRow = buttonClickedId / 4;
 		int buttonCol = buttonClickedId % 4;
@@ -78,6 +89,8 @@ class CustomNumberPuzzleControl extends NumberPuzzleControl {
 		boolean[] checkExisting = new boolean[15];
 		for (int i = 0; i < 15; i++) {
 			int randomNumber = (int) (getRandomNumber()*15/100.0);
+//			if the number already exists in arr check if number + 1 is available.
+//			hence next available number strategy is used.
 			if (checkExisting[randomNumber]){
 				do {
 					randomNumber = (randomNumber + 1) % 15;
